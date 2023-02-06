@@ -9,8 +9,7 @@ import csv
 from rest_framework.views import APIView
 
 from .models import Customer, Gem, Deal, File
-from .serializers import CustomerSerializer, DealSerializer, FileSerializer
-import chardet
+from .serializers import DealSerializer, FileSerializer
 
 
 def deal_to_db(filename):
@@ -66,55 +65,6 @@ def deal_to_db(filename):
         print(f'Всего в файле {count} строк.')
 
 
-class DealCreateView(views.APIView):
-    permission_classes = [permissions.AllowAny]
-    # authentication_classes = []
-    parser_classes = [JSONParser, MultiPartParser]
-
-    def get(self, request):
-        deal_to_db('deals.csv')
-        return Response(status=status.HTTP_200_OK)
-
-
-class CustomerListView(generics.ListAPIView):
-    queryset = Customer.objects.all()
-    permission_classes = [permissions.AllowAny]
-    # authentication_classes = []
-    parser_classes = [JSONParser, MultiPartParser]
-    serializer_class = CustomerSerializer
-    filter_backends = [filters.OrderingFilter, filters.SearchFilter]
-    ordering_fields = ['username', 'item', 'total', 'quantity']
-    search_fields = ['username', 'item', 'total', 'quantity', 'date']
-
-
-class ClientListView(generics.ListAPIView):
-    queryset = Deal.objects.filter()
-    permission_classes = [permissions.AllowAny]
-    # authentication_classes = []
-    parser_classes = [JSONParser, MultiPartParser]
-    serializer_class = CustomerSerializer
-    filter_backends = [filters.OrderingFilter, filters.SearchFilter]
-    ordering_fields = ['username', 'item', 'total', 'quantity']
-    search_fields = ['username', 'item', 'total', 'quantity', 'date']
-
-
-class CustomerDetailView(views.APIView):
-    permission_classes = [permissions.AllowAny]
-    # authentication_classes = []
-    parser_classes = [JSONParser, MultiPartParser]
-
-    def get(self, request, username):
-        customers = Customer.objects.filter(username=username)
-        spent_money = 0
-        for customer in customers:
-            spent_money += customer.total
-        data = {
-            'username': username,
-            'spent_money': spent_money
-        }
-        return Response(data, status=status.HTTP_200_OK)
-
-
 class DealListView(generics.ListAPIView):
     queryset = Deal.objects.order_by('-spent_money')
     permission_classes = [permissions.AllowAny]
@@ -125,15 +75,13 @@ class DealListView(generics.ListAPIView):
     ordering_fields = ['username', 'spent_money', 'gems__name']
     search_fields = ['username', 'spent_money', 'gems__name']
 
-
-class UploadFileView(generics.CreateAPIView):
-    queryset = File.objects.all()
-    permission_classes = [permissions.AllowAny]
-    parser_classes = [JSONParser, MultiPartParser]
-    serializer_class = FileSerializer
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        queryset = queryset.order_by('-spent_money')[:5]
+        return queryset
 
 
-class FileReadAPIView(APIView):
+class UploadFileView(APIView):
     permission_classes = [permissions.AllowAny]
 
     def post(self, request):
@@ -144,5 +92,5 @@ class FileReadAPIView(APIView):
             )
             file.save()
             deal_to_db(file.file.path)
-            return Response({'Файл был обработан без ошибок'}, status=status.HTTP_201_CREATED)
+            return Response({'Файл был обработан без ошибок'}, status=status.HTTP_200_OK)
         return Response(serializers.errors, status=status.HTTP_400_BAD_REQUEST)

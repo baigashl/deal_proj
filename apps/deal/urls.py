@@ -1,20 +1,19 @@
 from django.urls import path
 from .views import (
-    DealCreateView,
+    # DealCreateView,
     DealListView,
-    CustomerListView,
-    CustomerDetailView,
+    # CustomerListView,
+    # CustomerDetailView,
     UploadFileView,
-    FileReadAPIView,
 )
 
 urlpatterns = [
-    path('create/', DealCreateView.as_view(), name='deal-create'),
+    # path('create/', DealCreateView.as_view(), name='deal-create'),
     path('list/', DealListView.as_view(), name='deal-list'),
 
-    path('customer/list/', CustomerListView.as_view(), name='customer-list'),
-    path('customer/<str:username>/', CustomerDetailView.as_view(), name='customer-detail'),
+    # path('customer/list/', CustomerListView.as_view(), name='customer-list'),
+    # path('customer/<str:username>/', CustomerDetailView.as_view(), name='customer-detail'),
 
     path('uploadfile/', UploadFileView.as_view(), name='upload-file'),
-    path('fileread/', FileReadAPIView.as_view(), name='read-file'),
+    # path('uploadfile/', FileReadAPIView.as_view(), name='read-file'),
 ]
