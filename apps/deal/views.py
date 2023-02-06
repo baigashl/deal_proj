@@ -8,7 +8,7 @@ import csv
 
 from rest_framework.views import APIView
 
-from .models import Customer, Gem, Deal, File
+from .models import Gem, Deal, File
 from .serializers import DealSerializer, FileSerializer
 
 
@@ -53,13 +53,6 @@ def deal_to_db(filename):
                         )
                         deal.save()
                         deal.gems.add(gem2)
-                Customer.objects.create(
-                    username=row[0],
-                    item=row[1],
-                    total=row[2],
-                    quantity=row[3],
-                    date=row[4],
-                )
                 print(f'    {row[0]} - {row[1]} - {row[2]} - {row[3]} - {row[4]} ')
             count += 1
         print(f'Всего в файле {count} строк.')
