@@ -1,9 +1,23 @@
-# stripe project
+# deal project
 
 
 ### Запускаем проект локально
 - клонируем репозиторий:
 - `git clone https://github.com/baigashl/deal_proj.git`
+
+
+- заходим в проект:
+- `cd deal_proj`
+
+
+- создаем .env файл с ключами:
+- POSTGRES_DB
+- POSTGRES_USER
+- POSTGRES_PASSWORD
+- POSTGRES_HOST
+- POSTGRES_PORT
+- DEBUG
+- USE_S3
 
 
 - запуск с помощью docker:
